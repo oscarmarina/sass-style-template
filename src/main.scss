@@ -1,0 +1,14 @@
+@use 'other';
+$color: indianred;
+$bar: 2rem;
+
+:host {
+  color: $color;
+  font-size: $bar;
+  line-height: 2px;
+  letter-spacing: px;
+}
+
+::placeholder {
+  color: pink;
+}

@@ -1,0 +1,26 @@
+{
+  "name": "@blockquote/sass-style-template",
+  "version": "1.0.0",
+  "description": "SASS and LitElement for creating Web Components",
+  "keywords": ["LitElement", "web-component", "sass", "sass watch", "postcss", "glob", "dart sass"],
+  "author": "Oscar Marina",
+  "license": "MIT",
+  "main": "./lib/index.js",
+  "bin": {
+    "sass-style-template": "./bin/index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+
+  "dependencies": {
+    "autoprefixer": "^9.7.0",
+    "chalk": "^4.0.0",
+    "chokidar": "^3.3.0",
+    "commander": "^5.0.0",
+    "glob": "^7.1.0",
+    "mkdirp": "^1.0.0",
+    "postcss": "^7.0.0",
+    "sass": "^1.26.0"
+  }
+}

@@ -1,0 +1,12 @@
+$color: yellow;
+
+p {
+  color: $color;
+
+ padding: 2em;
+}
+@media (min-resolution: 2dppx) {
+  .image {
+    background-image: url(image@2x.png);
+  }
+}
