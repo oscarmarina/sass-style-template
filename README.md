@@ -1,4 +1,4 @@
-### sass-style-template
+## sass-style-template
 
 Simple SCSS watcher with autoprefixer.
 
