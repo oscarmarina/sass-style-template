@@ -5,6 +5,11 @@
   "keywords": ["LitElement", "web-component", "sass", "sass watch", "postcss", "glob", "dart sass"],
   "author": "Oscar Marina",
   "license": "MIT",
+  "homepage": "https://github.com/oscarmarina/sass-style-template",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oscarmarina/sass-style-template"
+  },
   "main": "./lib/index.js",
   "bin": {
     "sass-style-template": "./bin/index.js"
