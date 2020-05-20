@@ -1,6 +1,6 @@
 {
   "name": "@blockquote/sass-style-template",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "SASS and LitElement for creating Web Components",
   "keywords": ["LitElement", "web-component", "sass", "sass watch", "postcss", "glob", "dart sass"],
   "author": "Oscar Marina",
