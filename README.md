@@ -31,7 +31,7 @@ p {
 ```
 
 ```js
-import { css, unsafeCSS } from 'lit-element';
+import { css, unsafeCSS } from 'lit';
 import * as tokens from 'my-design-system-tokens';
 
 export default css`:host {
@@ -69,7 +69,7 @@ The first time a default template will be used to create a style file
 
 ```js
 // sass-template.tmpl
-import { css, unsafeCSS } from 'lit-element';
+import { css, unsafeCSS } from 'lit';
 
 export default css`<% content %>`;
 ```
@@ -89,7 +89,7 @@ Following changes in the ``scss file (my-component.scss)`` will update only the 
 
 ```js
 // from original template
-import { css, unsafeCSS } from 'lit-element';
+import { css, unsafeCSS } from 'lit';
 
 // new content added later, it will not be deleted when updating scss file
 import * as tokens from 'my-design-system-tokens';
@@ -129,7 +129,7 @@ const customTemplate = path.resolve('.sass-template.tmpl');
 
 ##### .sass-template.tmpl
 ```js
-import { css, unsafeCSS } from 'lit-element';
+import { css, unsafeCSS } from 'lit';
 
 export default css`<% content %>`;
 ```
@@ -139,7 +139,7 @@ export default css`<% content %>`;
 ```js
  // 😎 https://github.com/material-components/material-components-web-components/blob/master/sass-template.tmpl
 
-import {css} from 'lit-element';
+import {css} from 'lit';
 export const style = css`<% content %>`;
 ```
 ---
