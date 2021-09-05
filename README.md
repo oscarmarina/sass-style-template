@@ -9,7 +9,7 @@ Simple SCSS watcher with autoprefixer.
 
 ```js
 // I don't want to use SASS directly in my code
-import styles from './my-component-style.scss😟
+import styles from './my-component-style.scss' 😟
 ```
 #### Lit Element makes it easy to _"shimming"_ CSS Modules and _"using"_ CSS-in-JS in a simple and lightweight way
 ```scss
@@ -137,7 +137,7 @@ export default css`<% content %>`;
 ##### Creating a custom template file _in root directory_, using this name ``.sass-template.tmpl``
 
 ```js
- // 😎https://github.com/material-components/material-components-web-components/blob/master/sass-template.tmpl
+ // 😎 https://github.com/material-components/material-components-web-components/blob/master/sass-template.tmpl
 
 import {css} from 'lit-element';
 export const style = css`<% content %>`;

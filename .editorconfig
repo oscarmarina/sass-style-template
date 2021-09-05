@@ -5,9 +5,15 @@ root = true
 indent_style = space
 indent_size = 2
 end_of_line = lf
+quote_type = single
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
+
+[*.{html,js,md}]
+block_comment_start = /**
+block_comment = *
+block_comment_end = */
 
 # Use 4 spaces for the Python files
 [*.py]
