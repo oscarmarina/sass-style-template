@@ -1,6 +1,6 @@
 {
   "name": "@blockquote/sass-style-template",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "SASS and LitElement for creating Web Components",
   "keywords": ["LitElement", "web-component", "sass", "sass watch", "postcss", "glob", "dart sass"],
   "author": "Oscar Marina",
@@ -15,6 +15,7 @@
     "sass-style-template": "./bin/index.js"
   },
   "scripts": {
+    "start": "node ./bin/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
 
