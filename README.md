@@ -69,7 +69,7 @@ The first time a default template will be used to create a style file
 
 ```js
 // sass-template.tmpl
-import { css, unsafeCSS } from 'lit';
+import { css } from 'lit';
 
 export default css`<% content %>`;
 ```
@@ -89,7 +89,7 @@ Following changes in the ``scss file (my-component.scss)`` will update only the 
 
 ```js
 // from original template
-import { css, unsafeCSS } from 'lit';
+import { css } from 'lit';
 
 // new content added later, it will not be deleted when updating scss file
 import * as tokens from 'my-design-system-tokens';
@@ -121,7 +121,18 @@ const customTemplate = path.resolve('.sass-template.tmpl');
   .option('-e, --marker-end <string>', 'end replace position')
   .option('-g, --custom-glob <string>', 'string pattern to be matched')
   .option('-f, --css-file', 'generate css file instead of using template')
+  .option('-, --js-file <string>', 'file extension')
   .option('-d, --destination <string>', 'location of the output file');
+```
+
+### Usage - Typescript
+```js
+// package.json
+// my-component.scss --> my-component-styles.ts
+"scripts": {
+  "start": "concurrently -k -r \"npm:sass:watch\" \"npm:vite\"",
+  "sass:watch": "sass-style-template -j ts"
+}
 ```
 ---
 
@@ -156,6 +167,9 @@ export const style = css`<% content %>`;
 ##### --css-file (-f)
 > generate css file instead of using template : ``` undefined ```
 
+##### --js-file (-j)
+> file extension : ``` js ```
+
 ##### --destination (-d)
 > location of the output file : ``` undefined ```
 
@@ -163,7 +177,7 @@ export const style = css`<% content %>`;
 
 ### Example:
 
-[open-wc-sass](https://github.com/oscarmarina/open-wc-sass)
+[open-wc-vitejs-sass](https://github.com/oscarmarina/open-wc-vitejs-sass)
 
 _Free Software._
 
