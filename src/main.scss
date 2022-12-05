@@ -5,8 +5,8 @@ $bar: 2rem;
 :host {
   color: $color;
   font-size: $bar;
-  line-height: 2px;
-  letter-spacing: px;
+  line-height: 1.2;
+  letter-spacing: 2px;
 }
 
 ::placeholder {

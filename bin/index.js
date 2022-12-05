@@ -15,6 +15,7 @@ program
   .option('-e, --marker-end <string>', 'end replace position')
   .option('-g, --custom-glob <string>', 'string pattern to be matched')
   .option('-f, --css-file', 'generate css file instead of using template')
+  .option('-wo, --wo-suffix', 'without suffix string `-styles`')
   .option('-j, --js-file <string>', 'file extension')
   .option('-d, --destination <string>', 'location of the output file');
 
