@@ -1,6 +1,6 @@
 {
   "name": "@blockquote/sass-style-template",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "SASS and LitElement for creating Web Components",
   "keywords": [
     "LitElement",
@@ -27,12 +27,15 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "autoprefixer": "^10.4.13",
+    "autoprefixer": "^10.4.15",
     "chokidar": "^3.5.3",
-    "commander": "^9.5.0",
-    "glob": "^8.0.3",
-    "mkdirp": "^1.0.4",
-    "postcss": "^8.4.21",
-    "sass": "^1.57.1"
+    "commander": "^11.0.0",
+    "glob": "^10.3.4",
+    "mkdirp": "^3.0.1",
+    "postcss": "^8.4.29",
+    "sass": "^1.66.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
