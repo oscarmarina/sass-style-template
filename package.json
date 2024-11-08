@@ -1,6 +1,6 @@
 {
   "name": "@blockquote/sass-style-template",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "SASS and LitElement for creating Web Components",
   "keywords": [
     "LitElement",
@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "autoprefixer": "^10.4.20",
-    "chokidar": "^4.0.1",
+    "chokidar": "^3.6.0",
     "commander": "^12.1.0",
     "glob": "^11.0.0",
     "mkdirp": "^3.0.1",
