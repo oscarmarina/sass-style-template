@@ -1,19 +1,23 @@
 # sass-style-template
 
-Simple SCSS watcher with autoprefixer.
+A simple SCSS watcher with autoprefixer.
 
-### Why?
+## Goals
 
-- I want to use **SASS** and **LitElement** for creating **Web Components**.
-- I want to use ES Modules for CSS (CSS Modules) helping me through ES6 modules.
-- I want to make it simple and decoupled from any bundle generator (_snowpack, parcel, rollup, webpack_)
+- Use [Lit](https://lit.dev/) + [SASS](https://github.com/sass/dart-sass) to build **Web Components**.
+- Leverage ES6 module features to enable easy adoption of [import-attributes](https://fullystacked.net/import-attributes/) for [CSS module scripts](https://fullystacked.net/constructable/).
+- Keep it simple and independent of any bundler such as _rollup, parcel, webpack_.
 
 ```js
 // I don't want to use SASS directly in my code
 import styles from './my-component-style.scss' 😟
 ```
 
-> Lit Element makes it easy to _"shimming"_ CSS Modules and _"using"_ CSS-in-JS in a simple and lightweight way
+<hr>
+
+### Flow
+
+- **my-component-styles.scss**
 
 ```scss
 :host {
@@ -33,8 +37,10 @@ p {
 }
 ```
 
+- **my-component-styles.css.js**
+
 ```js
-import { css, unsafeCSS } from 'lit';
+import {css, unsafeCSS} from 'lit';
 import * as tokens from 'my-design-system-tokens';
 
 export const styles = css`
@@ -55,27 +61,32 @@ export const styles = css`
 `;
 ```
 
+- **my-component.js**
+
 ```js
-// LitElement
+import {html, LitElement} from 'lit';
 import { styles } from './my-component-styles.css.js';
 
-static get styles() {
-  return [styles]
+class MyComponent extends LitElement {
+  static get styles() {
+    return [styles]
+  }
 }
 ```
 
 ---
 
-Or just, compile .scss files to .css file and then use [ES Module Shims](https://github.com/guybedford/es-module-shims)
+Or just, compile .scss files to .css file and then use [CSS module scripts](https://github.com/web-platform-tests/interop/issues/703)
 
-> [CSS Modules - chromestatus](https://www.chromestatus.com/feature/5948572598009856)
 
 ```js
-// LitElement
-import styles from './style.css';
-...
-static get styles() {
-  return [styles]
+import {html, LitElement} from 'lit';
+import styles from './my-component-styles.css' with { type: 'css' };
+
+class MyComponent extends LitElement {
+  static get styles() {
+    return [styles]
+  }
 }
 ```
 
@@ -87,7 +98,7 @@ The first time a default template will be used to create a style file
 
 ```js
 // sass-template.tmpl
-import { css } from 'lit';
+import {css} from 'lit';
 
 export const styles = css`<% content %>`;
 ```
@@ -106,11 +117,11 @@ or without suffix
 
 > `my-component.scss --> my-component.css.js`
 
-Following changes in the `scss file (my-component.scss)` will update only the content between the **css`` template literal** in `.css.js file`
+Following changes in the `scss file (my-component.scss)` will update only the content between the ` css``; ` template literal in .css.js file
 
 ```js
 // from original template
-import { css } from 'lit';
+import {css} from 'lit';
 
 // new content added later, it will not be deleted when updating scss file
 import * as tokens from 'my-design-system-tokens';
@@ -127,21 +138,28 @@ export const styles = css`
 
 `npm i -D sass-style-template`
 
+Here is an example of using [Vite](https://vite.dev/) + [concurrently](https://www.npmjs.com/package/concurrently) in the package scripts:
+
+```js
+// package.json
+"scripts": {
+  "start": "concurrently -k -r \"npm:sass:watch\" \"npm:vite\"",
+  "vite": "vite",
+  "sass:watch": "sass-style-template"
+}
+```
+
 ### Options
 
 **sass-style-template**
 
 ```js
-// template default
-
-const customTemplate = path.resolve('sass-template.tmpl');
-
 // commander options
 version(pkg.version, '-v, --version', 'show version number')
   .option('-s, --marker-start <string>', 'start replace position')
   .option('-e, --marker-end <string>', 'end replace position')
   .option('-g, --custom-glob <string>', 'string pattern to be matched')
-  .option('-f, --css-file', 'generate css file instead of using template')
+  .option('-c, --css-file', 'generate a CSS file instead of JS or TS')
   .option('-wo, --wo-suffix', 'without suffix string `-styles`')
   .option('-j, --js-file <string>', 'file extension')
   .option('-d, --destination <string>', 'location of the output file');
@@ -151,9 +169,9 @@ version(pkg.version, '-v, --version', 'show version number')
 
 ```js
 // package.json
-// my-component.scss --> my-component-styles.css.ts
 "scripts": {
   "start": "concurrently -k -r \"npm:sass:watch\" \"npm:vite\"",
+  "vite": "vite",
   "sass:watch": "sass-style-template -j ts"
 }
 ```
@@ -165,18 +183,25 @@ version(pkg.version, '-v, --version', 'show version number')
 **sass-template.tmpl**
 
 ```js
-import { css } from 'lit';
+import {css}from 'lit';
 
 export const styles = css`<% content %>`;
 ```
 
-Creating a custom template file _in root directory_, using this name `sass-template.tmpl`
+**Custom Template**
+
+Creating a custom template file in the root directory with the name `sass-template.tmpl`
 
 ```js
-// https://github.com/material-components/material-web/blob/master/css-to-ts.js
+// Example: sass-template.tmpl
+// https://github.com/material-components/material-web/blob/main/scripts/css-to-ts.ts
 
-import { css } from 'lit';
-
+/**
+ * @license
+ * Copyright 2024 XXX LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+import {css} from 'lit';
 export const styles = css`<% content %>`;
 ```
 
@@ -194,7 +219,7 @@ export const styles = css`<% content %>`;
 
 > pattern to be matched : `./*.scss, ./src/**/*.scss`
 
-##### --css-file (-f)
+##### --css-file (-c)
 
 > generate css file instead of using template : `undefined`
 
@@ -214,6 +239,8 @@ export const styles = css`<% content %>`;
 
 ### Example:
 
-[open-wc-vitejs-sass](https://github.com/oscarmarina/open-wc-vitejs-sass)
+Scaffold a new Lit component with SASS using:
+
+> [npm init @blockquote/wc](https://github.com/oscarmarina/create-wc)
 
 _Free Software._

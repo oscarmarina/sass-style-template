@@ -1,9 +1,8 @@
-$color: orange;
+$color: indianred;
 
 p {
   color: $color;
-
- padding: 2em;
+  padding: 2em;
 }
 @media (min-resolution: 2dppx) {
   .image {
