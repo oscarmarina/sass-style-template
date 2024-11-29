@@ -23,7 +23,8 @@ program
   .option('-c, --css-file', 'generate a CSS file instead of JS or TS')
   .option('-wo, --wo-suffix', 'without suffix string `-styles`')
   .option('-j, --js-file <string>', 'file extension')
-  .option('-d, --destination <string>', 'location of the output file');
+  .option('-d, --destination <string>', 'location of the output file')
+  .option('-hr, --hide-reload', 'suppress reload info output');
 
 program.parse(process.argv);
 

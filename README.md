@@ -162,7 +162,8 @@ version(pkg.version, '-v, --version', 'show version number')
   .option('-c, --css-file', 'generate a CSS file instead of JS or TS')
   .option('-wo, --wo-suffix', 'without suffix string `-styles`')
   .option('-j, --js-file <string>', 'file extension')
-  .option('-d, --destination <string>', 'location of the output file');
+  .option('-d, --destination <string>', 'location of the output file')
+  .option('-hr, --hide-reload', 'no reload info output');
 ```
 
 ### Typescript (--js-file option)
@@ -234,6 +235,10 @@ export const styles = css`<% content %>`;
 ##### --destination (-d)
 
 > location of the output file : `undefined`
+
+##### --hide-reload (-hr)
+
+> suppress reload info output : `false`
 
 ---
 
