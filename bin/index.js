@@ -21,10 +21,10 @@ program
   .option('-e, --marker-end <string>', 'end replace position')
   .option('-g, --custom-glob <string>', 'string pattern to be matched')
   .option('-c, --css-file', 'generate a CSS file instead of JS or TS')
-  .option('-wo, --wo-suffix', 'without suffix string `-styles`')
+  .option('-w, --wo-suffix', 'without suffix string `-styles`')
   .option('-j, --js-file <string>', 'file extension')
   .option('-d, --destination <string>', 'location of the output file')
-  .option('-hr, --hide-reload', 'suppress reload info output');
+  .option('-h, --hide-reload', 'suppress reload info output');
 
 program.parse(process.argv);
 

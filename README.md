@@ -160,10 +160,10 @@ version(pkg.version, '-v, --version', 'show version number')
   .option('-e, --marker-end <string>', 'end replace position')
   .option('-g, --custom-glob <string>', 'string pattern to be matched')
   .option('-c, --css-file', 'generate a CSS file instead of JS or TS')
-  .option('-wo, --wo-suffix', 'without suffix string `-styles`')
+  .option('-w, --wo-suffix', 'without suffix string `-styles`')
   .option('-j, --js-file <string>', 'file extension')
   .option('-d, --destination <string>', 'location of the output file')
-  .option('-hr, --hide-reload', 'no reload info output');
+  .option('-h, --hide-reload', 'no reload info output');
 ```
 
 ### Typescript (--js-file option)
@@ -224,7 +224,7 @@ export const styles = css`<% content %>`;
 
 > generate css file instead of using template : `undefined`
 
-##### --wo-suffix (-wo)
+##### --wo-suffix (-w)
 
 > without suffix string **-styles** : `undefined`
 
@@ -236,7 +236,7 @@ export const styles = css`<% content %>`;
 
 > location of the output file : `undefined`
 
-##### --hide-reload (-hr)
+##### --hide-reload (-h)
 
 > suppress reload info output : `false`
 
