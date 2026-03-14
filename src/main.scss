@@ -1,4 +1,5 @@
-@use "other";
+@use "./index" as *;
+@use "./other";
 $color: indianred;
 $bar: 2rem;
 
@@ -11,4 +12,8 @@ $bar: 2rem;
 
 ::placeholder {
   color: pink;
+}
+
+.sr-only {
+  @include visuallyhidden;
 }

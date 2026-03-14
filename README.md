@@ -163,7 +163,8 @@ version(pkg.version, '-v, --version', 'show version number')
   .option('-w, --wo-suffix', 'without suffix string `-styles`')
   .option('-j, --js-file <string>', 'file extension')
   .option('-d, --destination <string>', 'location of the output file')
-  .option('-h, --hide-reload', 'no reload info output');
+  .option('-h, --hide-reload', 'no reload info output')
+  .option('-l, --load-paths <string>', 'paths to resolve @use/@import');
 ```
 
 ### Typescript (--js-file option)
@@ -239,6 +240,10 @@ export const styles = css`<% content %>`;
 ##### --hide-reload (-h)
 
 > suppress reload info output : `false`
+
+##### --load-paths (-l)
+
+> paths to resolve @use/@import : `['node_modules']`
 
 ---
 

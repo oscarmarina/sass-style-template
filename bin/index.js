@@ -24,7 +24,8 @@ program
   .option('-w, --wo-suffix', 'without suffix string `-styles`')
   .option('-j, --js-file <string>', 'file extension')
   .option('-d, --destination <string>', 'location of the output file')
-  .option('-h, --hide-reload', 'suppress reload info output');
+  .option('-h, --hide-reload', 'suppress reload info output')
+  .option('-l, --load-paths <paths...>', 'paths to resolve @use/@import (default: node_modules)');
 
 program.parse(process.argv);
 
