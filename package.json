@@ -1,6 +1,6 @@
 {
   "name": "@blockquote/sass-style-template",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "description": "A SCSS watcher with autoprefixer for building Web Components using Lit and SASS.",
   "keywords": [
     "lit",

@@ -3,6 +3,9 @@ $color: indianred;
 p {
   color: $color;
   padding: 2em;
+  &::after {
+    content: "⊙";
+  }
 }
 @media (min-resolution: 2dppx) {
   .image {
