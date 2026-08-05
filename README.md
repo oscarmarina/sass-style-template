@@ -136,7 +136,7 @@ export const styles = css`
 
 ### Usage
 
-`npm i -D sass-style-template`
+`npm i -D @blockquote/sass-style-template`
 
 Here is an example of using [Vite](https://vite.dev/) + [concurrently](https://www.npmjs.com/package/concurrently) in the package scripts:
 
@@ -164,7 +164,8 @@ version(pkg.version, '-v, --version', 'show version number')
   .option('-j, --js-file <string>', 'file extension')
   .option('-d, --destination <string>', 'location of the output file')
   .option('-h, --hide-reload', 'no reload info output')
-  .option('-l, --load-paths <string>', 'paths to resolve @use/@import');
+  .option('--once', 'process matching SASS files once without watching')
+  .option('-l, --load-paths <paths...>', 'paths to resolve @use/@import');
 ```
 
 ### Typescript (--js-file option)
@@ -192,7 +193,7 @@ export const styles = css`<% content %>`;
 
 **Custom Template**
 
-Creating a custom template file in the root directory with the name `sass-template.tmpl`
+Creating a custom template file in the root directory with the name `.sass-template.tmpl`
 
 ```js
 // Example: sass-template.tmpl
@@ -240,6 +241,10 @@ export const styles = css`<% content %>`;
 ##### --hide-reload (-h)
 
 > suppress reload info output : `false`
+
+##### --once
+
+> process matching SASS files once without watching : `false`
 
 ##### --load-paths (-l)
 

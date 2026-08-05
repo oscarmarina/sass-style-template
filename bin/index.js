@@ -25,6 +25,7 @@ program
   .option('-j, --js-file <string>', 'file extension')
   .option('-d, --destination <string>', 'location of the output file')
   .option('-h, --hide-reload', 'suppress reload info output')
+  .option('--once', 'process matching SASS files once without watching')
   .option('-l, --load-paths <paths...>', 'paths to resolve @use/@import (default: node_modules)');
 
 program.parse(process.argv);
@@ -35,4 +36,8 @@ const template = fs.existsSync(customTemplatePath)
 
 const config = Object.assign({}, program.opts(), {template});
 
-new SassStyleTemplate(config);
+const sassStyleTemplate = new SassStyleTemplate(config);
+
+if (config.once) {
+  await sassStyleTemplate.ready;
+}

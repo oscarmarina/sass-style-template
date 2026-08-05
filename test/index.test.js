@@ -33,6 +33,20 @@ async function createTestDir(name) {
   return dir;
 }
 
+async function captureConsoleErrors(callback) {
+  const originalConsoleError = console.error;
+  const errors = [];
+  console.error = (...args) => errors.push(args);
+
+  try {
+    await callback();
+  } finally {
+    console.error = originalConsoleError;
+  }
+
+  return errors;
+}
+
 before(async () => {
   tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'sass-test-'));
 });
@@ -64,8 +78,12 @@ describe('SassProcessor - compile', () => {
 
   it('should return null for invalid .scss', async () => {
     const instance = createInstance();
-    const css = await instance.sassProcessor.compile(`${dir}/invalid.scss`);
-    assert.equal(css, null);
+    const errors = await captureConsoleErrors(async () => {
+      const css = await instance.sassProcessor.compile(`${dir}/invalid.scss`);
+      assert.equal(css, null);
+    });
+    assert.equal(errors.length, 1);
+    assert.match(errors[0][0], /Error compiling SASS file/);
   });
 });
 
@@ -113,34 +131,66 @@ describe('renderStylesTemplate', () => {
     assert.ok(content.includes('display: block'));
   });
 
+  it('should write to an absolute destination directory', async () => {
+    const dir = await createTestDir('render-absolute-destination');
+    const destination = path.join(dir, 'generated');
+    const instance = createInstance({destination});
+    await instance.renderStylesTemplate(`${dir}/simple.scss`);
+    const content = await fs.readFile(`${destination}/simple-styles.css.js`, 'utf8');
+    assert.ok(content.includes('display: block'));
+  });
+
   it('should skip partial files starting with _', async () => {
     const dir = await createTestDir('render-partial');
-    const instance = createInstance();
+    let compileCalled = false;
+    const instance = createInstance({
+      sassProcessor: {
+        compile() {
+          compileCalled = true;
+        },
+      },
+    });
     await instance.renderStylesTemplate(`${dir}/_partial.scss`);
     const files = await fs.readdir(dir);
     const partialOutput = files.find((f) => f.startsWith('_partial') && f !== '_partial.scss');
+    assert.equal(compileCalled, false);
     assert.equal(partialOutput, undefined);
+  });
+
+  it('should preserve braces and escape backticks in CSS content strings', async () => {
+    const dir = await createTestDir('render-css-content');
+    const inputFile = `${dir}/content.scss`;
+    await fs.writeFile(inputFile, '.test::before { content: "}x`"; }\n', 'utf8');
+    const instance = createInstance();
+    await instance.renderStylesTemplate(inputFile);
+    const content = await fs.readFile(`${dir}/content-styles.css.js`, 'utf8');
+    assert.ok(content.includes('content: "}x\\`"'));
   });
 
   it('should replace content between markers in existing file', async () => {
     const dir = await createTestDir('render-markers');
     const outputFile = `${dir}/simple-styles.css.js`;
-    const existingContent = `import {css} from 'lit';\n\nconst styles = css\`\n  :host { color: blue; }\n\`;\n`;
+    const existingContent = `import {css} from 'lit';\n\nconst styles = css\`\n  :host { color: blue; }\n\`;\n\nexport default styles;\n`;
     await fs.writeFile(outputFile, existingContent, 'utf8');
     const instance = createInstance();
     await instance.renderStylesTemplate(`${dir}/simple.scss`);
     const content = await fs.readFile(outputFile, 'utf8');
     assert.ok(content.includes('display: block'));
     assert.ok(!content.includes('color: blue'));
+    assert.ok(content.endsWith('\nexport default styles;\n'));
   });
 
   it('should not generate output for compilation errors', async () => {
     const dir = await createTestDir('render-error');
     const instance = createInstance();
     const filesBefore = await fs.readdir(dir);
-    await instance.renderStylesTemplate(`${dir}/invalid.scss`);
+    const errors = await captureConsoleErrors(() =>
+      instance.renderStylesTemplate(`${dir}/invalid.scss`)
+    );
     const filesAfter = await fs.readdir(dir);
     const newFiles = filesAfter.filter((f) => !filesBefore.includes(f) && f.includes('invalid'));
+    assert.equal(errors.length, 1);
+    assert.match(errors[0][0], /Error compiling SASS file/);
     assert.equal(newFiles.length, 0);
   });
 });
@@ -170,10 +220,108 @@ describe('options and defaults', () => {
     assert.equal(instance.options.jsFile, 'js');
     assert.equal(instance.options.cssFile, undefined);
     assert.equal(instance.options.woSuffix, undefined);
+    assert.equal(instance.options.once, false);
   });
 
   it('should set globFiles to empty array when no matches', () => {
     const instance = createInstance();
     assert.deepEqual(instance.globFiles, []);
+  });
+
+  it('should trim comma-separated glob patterns', () => {
+    const instance = createInstance({customGlob: './*.scss, ./src/**/*.scss'});
+    assert.deepEqual(instance.globPatterns, ['./*.scss', './src/**/*.scss']);
+  });
+
+  it('should derive bounded watch roots from glob patterns', () => {
+    const instance = createInstance({customGlob: './*.scss, ./src/**/*.scss'});
+    assert.deepEqual(instance.watchSpecs, [
+      {root: process.cwd(), depth: 0},
+      {root: path.resolve('src'), depth: undefined},
+    ]);
+  });
+});
+
+describe('unlinkFile', () => {
+  it('should remove the output next to the deleted source instead of using shared fileInfo', async () => {
+    const dir = await createTestDir('unlink');
+    const outputFile = `${dir}/simple-styles.css.js`;
+    await fs.writeFile(outputFile, 'generated', 'utf8');
+    const instance = createInstance();
+    instance.fileInfo = {fileDir: '/wrong/directory', fileExt: '.wrong'};
+
+    await instance.unlinkFile(`${dir}/simple.scss`);
+
+    await assert.rejects(fs.access(outputFile), {code: 'ENOENT'});
+  });
+});
+
+describe('watchSass', () => {
+  it('should discover the first file created under a glob root', async () => {
+    const dir = path.join(tmpDir, 'watch-first-file');
+    const sourceDir = path.join(dir, 'src', 'components');
+    const outputFile = path.join(sourceDir, 'first-styles.css.js');
+    await fs.mkdir(dir, {recursive: true});
+    const instance = new SassStyleTemplate({
+      customGlob: `${dir}/src/**/*.scss`,
+      hideReload: true,
+      template,
+    });
+    const watchersReady = Promise.all(
+      instance.watchers.map(
+        (watcher) => new Promise((resolve) => watcher.once('ready', resolve))
+      )
+    );
+
+    try {
+      await instance.ready;
+      await watchersReady;
+      await fs.mkdir(sourceDir, {recursive: true});
+      await fs.copyFile(`${fixturesDir}/simple.scss`, path.join(sourceDir, 'first.scss'));
+
+      await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          clearInterval(interval);
+          reject(new Error('Timed out waiting for generated output'));
+        }, 3000);
+        const interval = setInterval(async () => {
+          try {
+            await fs.access(outputFile);
+            clearTimeout(timeout);
+            clearInterval(interval);
+            resolve();
+          } catch (error) {
+            if (error.code !== 'ENOENT') {
+              clearTimeout(timeout);
+              clearInterval(interval);
+              reject(error);
+            }
+          }
+        }, 25);
+      });
+    } finally {
+      await Promise.all(instance.watchers.map((watcher) => watcher.close()));
+    }
+  });
+});
+
+describe('once option', () => {
+  it('does not start the watcher when enabled', () => {
+    let watchStarted = false;
+
+    class WatchRecordingSassStyleTemplate extends SassStyleTemplate {
+      watchSass() {
+        watchStarted = true;
+      }
+    }
+
+    new WatchRecordingSassStyleTemplate({
+      customGlob: '__none__',
+      hideReload: true,
+      once: true,
+      template,
+    });
+
+    assert.equal(watchStarted, false);
   });
 });
