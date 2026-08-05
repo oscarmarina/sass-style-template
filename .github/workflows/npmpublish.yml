@@ -1,29 +1,39 @@
-on: push
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - '*'
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: '24.x'
       - name: Checkout repository
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24.x
+
       - name: Install dependencies
-        run: npm i
+        run: npm ci
+
       - name: Determine npm tag
-        id: npm_tag
         run: |
           version=$(node -p "require('./package.json').version")
-          if [[ $version == *"-rc"* ]]; then
-            echo "tag=rc" >> $GITHUB_ENV
+
+          if [[ "$version" == *"-rc"* ]]; then
+            echo "tag=rc" >> "$GITHUB_ENV"
           else
-            echo "tag=latest" >> $GITHUB_ENV
+            echo "tag=latest" >> "$GITHUB_ENV"
           fi
-      - name: Publish to NPM
+
+      - name: Publish to npm
         uses: JS-DevTools/npm-publish@v4
         with:
           token: ${{ secrets.NPM_TOKEN }}
